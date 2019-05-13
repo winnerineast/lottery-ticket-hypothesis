@@ -24,5 +24,5 @@ from __future__ import print_function
 
 # Originally from https://s3.amazonaws.com/img-datasets/mnist.npz
 MNIST_LOCATION = 'henry_data/mnist'
-
+FASHIONMNIST_LOCATION = 'henry_data/fashionmnist'
 EXPERIMENT_PATH = 'henry_mnist_fc_data'
