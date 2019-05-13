@@ -23,6 +23,6 @@ from __future__ import print_function
 # See datasets/dataset_mnist.py for details.
 
 # Originally from https://s3.amazonaws.com/img-datasets/mnist.npz
-MNIST_LOCATION = 'data/mnist'
+MNIST_LOCATION = 'henry_data/mnist'
 
-EXPERIMENT_PATH = 'mnist_fc_data'
+EXPERIMENT_PATH = 'henry_mnist_fc_data'
