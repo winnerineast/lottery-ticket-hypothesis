@@ -26,7 +26,7 @@ def main(argv):
   del argv  # Unused.
   line_format = '--output_dir={output_dir}'
 
-  for trial in range(1, 21):
+  for trial in range(1, 4):
     print(line_format.format(output_dir=constants.trial(trial)))
 
 if __name__ == '__main__':

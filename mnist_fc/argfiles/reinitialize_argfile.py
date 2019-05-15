@@ -34,8 +34,8 @@ def main(argv):
   line_format = ('--masks={masks} --output_dir={output_dir}')
   name = FLAGS.experiment
 
-  for trial in range(1, 21):
-    for level in range(0, 31):
+  for trial in range(1, 4):
+    for level in range(0, 11):
       for run in range(1, 11):
         masks = paths.masks(constants.run(trial, level))
         output = constants.run(trial, level, name, run)
