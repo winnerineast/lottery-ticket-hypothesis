@@ -50,7 +50,7 @@ def save_network(filename, weights_dict):
   tf.gfile.MakeDirs(filename)
 
   for k, v in weights_dict.items():
-    with tf.gfile.FastGFile(os.path.join(filename, k + '.npy'), 'w') as fp:
+    with tf.gfile.GFile(os.path.join(filename, k + '.npy'), 'wb') as fp:
       np.save(fp, v)
 
 
@@ -82,7 +82,8 @@ def restore_network(filename):
 
   for basename in tf.gfile.ListDirectory(filename):
     name = basename.split('.')[0]
-    with tf.gfile.FastGFile(os.path.join(filename, basename)) as fp:
+    with tf.gfile.GFile(os.path.join(filename, basename), 'rb') as fp:
+      print(os.path.join(filename, basename))
       weights_dict[name] = np.load(fp)
 
   return weights_dict
@@ -150,7 +151,7 @@ def read_log(directory, name='test', tail=0):
       'accuracy': [],
   }
 
-  with tf.gfile.GFile(paths.log(directory, name)) as fp:
+  with tf.gfile.GFile(paths.log(directory, name), 'r') as fp:
     reader = csv.reader(fp)
     for row in reader:
       output['iteration'].append(float(row[1]))
@@ -177,7 +178,7 @@ def write_log(data, directory, name='test'):
       to be stored.
     name: What to call the data file itself.
   """
-  with tf.gfile.GFile(paths.log(directory, name), 'w') as fp:
+  with tf.gfile.GFile(paths.log(directory, name), 'wb') as fp:
     for loss, it, acc in zip(data['loss'], data['iteration'], data['accuracy']):
       fp.write(','.join(
           ('iteration',
@@ -185,3 +186,58 @@ def write_log(data, directory, name='test'):
            str(loss), 'accuracy',
            str(acc))))
       fp.write('\n')
+
+
+# trialnets = []
+# triallogs = []
+# trialmasks = []
+# trialmins0 = []
+# trialmins1 = []
+# trialmins2 = []
+for trial in range(1, 7):
+    # nets = []
+    # logs = []
+    # masks = []
+    # mins0 = []
+    # mins1 = []
+    # mins2 = []
+    i = 15
+    # net = restore_network("mnist_fc/henry_mnist_fc_data/trial" + str(trial) + "/" + str(i) + "/same_init/final/")
+    # nets.append(net)
+    mask = restore_network("mnist_fc/henry_mnist_fc_data/trial" + str(trial) + "/" + str(i) + "/same_init/masks/")
+    # masks.append(mask)
+    # log = read_log("mnist_fc/henry_mnist_fc_data/trial" + str(trial) + "/" + str(i) + "/same_init")
+    # logs.append(np.max(log['accuracy']))
+    # mins0.append(np.min(np.where(np.abs(net['layer0']) > 0, net['layer0'], 10000)))
+    # mins1.append(np.min(np.where(np.abs(net['layer1']) > 0, net['layer1'], 10000)))
+    # mins2.append(np.min(np.where(np.abs(net['layer2']) > 0, net['layer2'], 10000)))
+    # trialnets.append(nets)
+    # triallogs.append(logs)
+    # trialmasks.append(masks)
+    # trialmins0.append(mins0)
+    # trialmins1.append(mins1)
+    # trialmins2.append(mins2)
+
+    lotterymult = {name: np.where(mask[name] == 1, np.random.normal(1, 0.5, mask[name].shape), 1) for name in mask}
+    nonlotterymult = {name: np.where(mask[name] == 0, np.random.normal(1, 0.5, mask[name].shape), 1) for name in mask}
+    ctrlmult = {name: np.where(True, np.random.normal(1, 0.5, mask[name].shape), 1) for name in mask}
+    start = restore_network("mnist_fc/henry_mnist_fc_data/trial" + str(trial) + "/0/same_init/initial/")
+    lotterypreset = {name: np.multiply(lotterymult[name], start[name]) for name in start}
+    nonlotterypreset = {name: np.multiply(nonlotterymult[name], start[name]) for name in start}
+    ctrlpreset = {name: np.multiply(ctrlmult[name], start[name]) for name in start}
+    save_network("mnist_fc/henry_mnist_fc_data/presets/trial" + str(trial) + "/lottery/", lotterypreset)
+    save_network("mnist_fc/henry_mnist_fc_data/presets/trial" + str(trial) + "/nonlottery/", nonlotterypreset)
+    save_network("mnist_fc/henry_mnist_fc_data/presets/trial" + str(trial) + "/ctrl/", ctrlpreset)
+
+#
+# layer1mask = mask['layer2']
+# print(trialmins2)
+# net = restore_network("mnist_fc/henry_mnist_fc_data/trial" + str(1) + "/" + str(0) + "/same_init/initial/")
+# np.where(net['layer0'] != 0, 1, 0)
+# for x in net['layer0']:
+#     print(x)
+# np.where(net['layer0'] != 0, 1, 0).sum()
+# layer1 = net['layer1']
+# np.argmax(log['accuracy'])
+# cwd = os.getcwd()
+# cwd

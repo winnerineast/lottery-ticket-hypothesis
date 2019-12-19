@@ -23,13 +23,13 @@ import fire
 
 
 def run(runner, argfile):
-  flags = subprocess.check_output(['python', argfile])
-  for flag in flags.split('\n'):
-    subprocess.call(['python', runner, flag])
+  flags = subprocess.check_output(['python3', argfile])
+  for flag in flags.decode('utf-8').split('\n'):
+    subprocess.call(['python3', runner, flag])
 
 
 def main(unused_argv):
   fire.Fire(run)
 
 if __name__ == '__main__':
-  main()
+  main(1)
